@@ -8,11 +8,31 @@ import (
 
 func TestFileLine(t *testing.T) {
 	var buf bytes.Buffer
-	l := NewLeveledLogger(&buf, LstdFlags)
+	l := NewLeveledLogger(&buf, Lshortfile)
 	l.Info("Test file line")
 
-	var exp = "leveled_logger_test.go:21"
-	if strings.Contains(buf.String(), exp) {
+	var exp = "leveled_logger_test.go:12"
+	if !strings.Contains(buf.String(), exp) {
+		t.Errorf("Expected filename and line number '%s' not found in: '%s'", exp, buf.String())
+	}
+}
+
+func TestCallerOffset(t *testing.T) {
+	var buf bytes.Buffer
+	l := NewLeveledLogger(&buf, Lshortfile)
+	l.SetCallerOffset(1)
+	l.Info("Test file line")
+
+	var exp = "testing.go"
+	if !strings.Contains(buf.String(), exp) {
+		t.Errorf("Expected filename and line number '%s' not found in: '%s'", exp, buf.String())
+	}
+
+	l.SetCallerOffset(0)
+	l.Info("Test file line")
+
+	exp = "leveled_logger_test.go:32"
+	if !strings.Contains(buf.String(), exp) {
 		t.Errorf("Expected filename and line number '%s' not found in: '%s'", exp, buf.String())
 	}
 }

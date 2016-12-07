@@ -40,6 +40,11 @@ type Leveler interface {
 	SetOutputLevel(Level)
 }
 
+// CallerOffsetter provides the ability of setting caller offset.
+type CallerOffsetter interface {
+	SetCallerOffset(int)
+}
+
 // Logger represents a full-featured logger.
 type Logger interface {
 	DebugLogger
@@ -49,4 +54,5 @@ type Logger interface {
 	FatalLogger
 
 	Leveler
+	CallerOffsetter
 }

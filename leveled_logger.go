@@ -24,6 +24,7 @@ func NewLeveledLoggerWithColor(out io.Writer, flag int, colored bool) *LeveledLo
 		fata:         log.New(out, tryPaint("F ", ColorRed, colored), flag),
 		defaultLevel: INFO,
 		outputLevel:  NOTSET,
+		depth:        2,
 	}
 }
 
@@ -42,6 +43,7 @@ type LeveledLogger struct {
 	fata         *log.Logger
 	outputLevel  Level
 	defaultLevel Level
+	depth        int
 }
 
 // SetDefaultLevel sets the DefaultLevel atomically.
@@ -65,11 +67,18 @@ func (l *LeveledLogger) OutputLevel() Level {
 	return Level(atomic.LoadInt32((*int32)(&l.outputLevel)))
 }
 
+// SetCallerOffset sets the offset used in runtime.Caller(2 + offset)
+// while getting file name and line number.
+// NOTE: Do not call this while logging, it's not goroutine safe.
+func (l *LeveledLogger) SetCallerOffset(offset int) {
+	l.depth = offset + 2
+}
+
 // Print prints log with DefaultLevel.
 // Arguments are handled in the manner of fmt.Print.
 func (l *LeveledLogger) Print(a ...interface{}) {
 	if l.DefaultLevel() >= l.OutputLevel() {
-		l.info.Output(2, fmt.Sprint(a...))
+		l.info.Output(l.depth, fmt.Sprint(a...))
 	}
 }
 
@@ -77,7 +86,7 @@ func (l *LeveledLogger) Print(a ...interface{}) {
 // Arguments are handled in the manner of fmt.Printf.
 func (l *LeveledLogger) Printf(format string, a ...interface{}) {
 	if l.DefaultLevel() >= l.OutputLevel() {
-		l.info.Output(2, fmt.Sprintf(format, a...))
+		l.info.Output(l.depth, fmt.Sprintf(format, a...))
 	}
 }
 
@@ -85,7 +94,7 @@ func (l *LeveledLogger) Printf(format string, a ...interface{}) {
 // Arguments are handled in the manner of fmt.Println.
 func (l *LeveledLogger) Println(a ...interface{}) {
 	if l.DefaultLevel() >= l.OutputLevel() {
-		l.info.Output(2, fmt.Sprintln(a...))
+		l.info.Output(l.depth, fmt.Sprintln(a...))
 	}
 }
 
@@ -93,7 +102,7 @@ func (l *LeveledLogger) Println(a ...interface{}) {
 // Arguments are handled in the manner of fmt.Print.
 func (l *LeveledLogger) Debug(a ...interface{}) {
 	if DEBUG >= l.OutputLevel() {
-		l.debug.Output(2, fmt.Sprint(a...))
+		l.debug.Output(l.depth, fmt.Sprint(a...))
 	}
 }
 
@@ -101,7 +110,7 @@ func (l *LeveledLogger) Debug(a ...interface{}) {
 // Arguments are handled in the manner of fmt.Printf.
 func (l *LeveledLogger) Debugf(format string, a ...interface{}) {
 	if DEBUG >= l.OutputLevel() {
-		l.debug.Output(2, fmt.Sprintf(format, a...))
+		l.debug.Output(l.depth, fmt.Sprintf(format, a...))
 	}
 }
 
@@ -109,7 +118,7 @@ func (l *LeveledLogger) Debugf(format string, a ...interface{}) {
 // Arguments are handled in the manner of fmt.Print.
 func (l *LeveledLogger) Info(a ...interface{}) {
 	if INFO >= l.OutputLevel() {
-		l.info.Output(2, fmt.Sprint(a...))
+		l.info.Output(l.depth, fmt.Sprint(a...))
 	}
 }
 
@@ -117,7 +126,7 @@ func (l *LeveledLogger) Info(a ...interface{}) {
 // Arguments are handled in the manner of fmt.Printf.
 func (l *LeveledLogger) Infof(format string, a ...interface{}) {
 	if INFO >= l.OutputLevel() {
-		l.info.Output(2, fmt.Sprintf(format, a...))
+		l.info.Output(l.depth, fmt.Sprintf(format, a...))
 	}
 }
 
@@ -125,7 +134,7 @@ func (l *LeveledLogger) Infof(format string, a ...interface{}) {
 // Arguments are handled in the manner of fmt.Print.
 func (l *LeveledLogger) Warn(a ...interface{}) {
 	if WARN >= l.OutputLevel() {
-		l.warn.Output(2, fmt.Sprint(a...))
+		l.warn.Output(l.depth, fmt.Sprint(a...))
 	}
 }
 
@@ -133,7 +142,7 @@ func (l *LeveledLogger) Warn(a ...interface{}) {
 // Arguments are handled in the manner of fmt.Printf.
 func (l *LeveledLogger) Warnf(format string, a ...interface{}) {
 	if WARN >= l.OutputLevel() {
-		l.warn.Output(2, fmt.Sprintf(format, a...))
+		l.warn.Output(l.depth, fmt.Sprintf(format, a...))
 	}
 }
 
@@ -141,7 +150,7 @@ func (l *LeveledLogger) Warnf(format string, a ...interface{}) {
 // Arguments are handled in the manner of fmt.Print.
 func (l *LeveledLogger) Fatal(a ...interface{}) {
 	if FATA >= l.OutputLevel() {
-		l.fata.Output(2, fmt.Sprint(a...))
+		l.fata.Output(l.depth, fmt.Sprint(a...))
 	}
 	os.Exit(1)
 }
@@ -150,7 +159,7 @@ func (l *LeveledLogger) Fatal(a ...interface{}) {
 // Arguments are handled in the manner of fmt.Printf.
 func (l *LeveledLogger) Fatalf(format string, a ...interface{}) {
 	if FATA >= l.OutputLevel() {
-		l.fata.Output(2, fmt.Sprintf(format, a...))
+		l.fata.Output(l.depth, fmt.Sprintf(format, a...))
 	}
 	os.Exit(1)
 }
