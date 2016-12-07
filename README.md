@@ -10,6 +10,19 @@ A lightweight, leveled logging package for Golang.
 - Leveled logging and filtering
 - Colored output
 
+## Example
+
+```go
+import "github.com/tevino/log"
+
+l := log.NewLogger(os.Stdout, log.LstdFlags)
+
+l.SetOutputLevel(log.INFO)
+
+l.Debug("Output level is INFO.")
+l.Info("Thus only this line is printed.")
+```
+
 
 ## Benchmark
 ```
