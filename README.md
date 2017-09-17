@@ -1,5 +1,5 @@
 # log
-A lightweight, leveled logging package for Golang.
+A lightweight, leveled logging package for Go.
 
 
 ## Install
