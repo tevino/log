@@ -25,6 +25,12 @@ type WarnLogger interface {
 	Warnf(string, ...interface{})
 }
 
+// WarnLogger represents a logger with Error* APIs.
+type ErrorLogger interface {
+	Error(...interface{})
+	Errorf(string, ...interface{})
+}
+
 // FatalLogger represents a logger with Fatal* APIs.
 type FatalLogger interface {
 	Fatal(...interface{})
@@ -51,6 +57,7 @@ type Logger interface {
 	PrintLogger
 	InfoLogger
 	WarnLogger
+	ErrorLogger
 	FatalLogger
 
 	Leveler

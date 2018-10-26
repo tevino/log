@@ -59,6 +59,16 @@ func Warnf(f string, a ...interface{}) {
 	defaultLogger.Warnf(f, a...)
 }
 
+// Error calls the same method on the default logger.
+func Error(a ...interface{}) {
+	defaultLogger.Warn(a...)
+}
+
+// Errorf calls the same method on the default logger.
+func Errorf(f string, a ...interface{}) {
+	defaultLogger.Warnf(f, a...)
+}
+
 // Fatal calls the same method on the default logger.
 func Fatal(a ...interface{}) {
 	defaultLogger.Fatal(a...)
