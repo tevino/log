@@ -15,12 +15,10 @@ A lightweight, leveled logging package for Go.
 ```go
 import "github.com/tevino/log"
 
-l := log.NewLogger(os.Stdout, log.LstdFlags)
+log.SetOutputLevel(log.INFO)
 
-l.SetOutputLevel(log.INFO)
-
-l.Debug("Output level is INFO.")
-l.Info("Thus only this line is printed.")
+log.Debugf("Output level is %s.", log.OutputLevel())
+log.Info("Thus only this line is printed.")
 ```
 
 
