@@ -6,10 +6,10 @@ import (
 	"os"
 	"testing"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/inconshreveable/log15"
 	"github.com/juju/loggo"
 	gologging "github.com/op/go-logging"
+	"github.com/sirupsen/logrus"
 )
 
 var hostname string
