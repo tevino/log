@@ -10,10 +10,11 @@ import (
 
 // Colors.
 const (
-	ColorBlue   = "\x1b[0;34m"
-	ColorGreen  = "\x1b[0;32m"
-	ColorYellow = "\x1b[0;33m"
-	ColorRed    = "\x1b[0;31m"
+	ColorBlue    = "\x1b[0;34m"
+	ColorGreen   = "\x1b[0;32m"
+	ColorYellow  = "\x1b[0;33m"
+	ColorRed     = "\x1b[0;31m"
+	ColorMegenta = "\x1b[0;35m"
 
 	ColorRST = "\x1b[0;m"
 )

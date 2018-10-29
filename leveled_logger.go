@@ -21,6 +21,7 @@ func NewLeveledLoggerWithColor(out io.Writer, flag int, colored bool) *LeveledLo
 		debug:        log.New(out, tryPaint("D ", ColorBlue, colored), flag),
 		info:         log.New(out, tryPaint("I ", ColorGreen, colored), flag),
 		warn:         log.New(out, tryPaint("W ", ColorYellow, colored), flag),
+		erro:         log.New(out, tryPaint("E ", ColorMegenta, colored), flag),
 		fata:         log.New(out, tryPaint("F ", ColorRed, colored), flag),
 		defaultLevel: INFO,
 		outputLevel:  NOTSET,
@@ -40,6 +41,7 @@ type LeveledLogger struct {
 	debug        *log.Logger
 	info         *log.Logger
 	warn         *log.Logger
+	erro         *log.Logger
 	fata         *log.Logger
 	outputLevel  Level
 	defaultLevel Level
@@ -143,6 +145,22 @@ func (l *LeveledLogger) Warn(a ...interface{}) {
 func (l *LeveledLogger) Warnf(format string, a ...interface{}) {
 	if WARN >= l.OutputLevel() {
 		l.warn.Output(l.depth, fmt.Sprintf(format, a...))
+	}
+}
+
+// Error prints log with level ERROR.
+// Arguments are handled in the manner of fmt.Print.
+func (l *LeveledLogger) Error(a ...interface{}) {
+	if WARN >= l.OutputLevel() {
+		l.erro.Output(l.depth, fmt.Sprint(a...))
+	}
+}
+
+// Errorf prints log with level ERROR.
+// Arguments are handled in the manner of fmt.Printf.
+func (l *LeveledLogger) Errorf(format string, a ...interface{}) {
+	if WARN >= l.OutputLevel() {
+		l.erro.Output(l.depth, fmt.Sprintf(format, a...))
 	}
 }
 

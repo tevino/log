@@ -9,6 +9,7 @@ const (
 	DEBUG
 	INFO
 	WARN
+	ERROR
 	FATA
 )
 
@@ -22,6 +23,8 @@ func LevelFromString(s string) Level {
 		return INFO
 	case "WARN", "WARNING", "W":
 		return WARN
+	case "ERROR", "E":
+		return ERROR
 	case "FATA", "FATAL", "F":
 		return FATA
 	case "NOTSET", "NOT SET", "N":
@@ -43,6 +46,8 @@ func (l Level) String() string {
 		return "INFO"
 	case WARN:
 		return "WARN"
+	case ERROR:
+		return "ERROR"
 	case FATA:
 		return "FATA"
 	case NOTSET:
