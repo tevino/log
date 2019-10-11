@@ -98,7 +98,7 @@ func TestDynamicCallDepth(t *testing.T) {
 	t.Run("error", func(t *testing.T) {
 		buf.Reset()
 		err := func(a ...interface{}) {
-			l.WarnDepth(1, a...)
+			l.ErrorDepth(1, a...)
 		}
 		err("ERROR log")
 		assertFileAndLine(t, buf.String(), 103)
