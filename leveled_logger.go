@@ -25,7 +25,7 @@ func NewLeveledLoggerWithColor(out io.Writer, flag int, colored bool) *LeveledLo
 		fata:         log.New(out, tryPaint("F ", ColorRed, colored), flag),
 		defaultLevel: INFO,
 		outputLevel:  NOTSET,
-		depth:        2,
+		depth:        3,
 	}
 }
 
@@ -69,223 +69,167 @@ func (l *LeveledLogger) OutputLevel() Level {
 	return Level(atomic.LoadInt32((*int32)(&l.outputLevel)))
 }
 
-// SetCallerOffset sets the offset used in runtime.Caller(2 + offset)
+// SetCallerOffset sets the offset used in runtime.Caller(3 + offset)
 // while getting file name and line number.
 // NOTE: Do not call this while logging, it's not goroutine safe.
 func (l *LeveledLogger) SetCallerOffset(offset int) {
-	l.depth = offset + 2
+	l.depth = offset + 3
 }
 
 // Print prints log with DefaultLevel.
 // Arguments are handled in the manner of fmt.Print.
 func (l *LeveledLogger) Print(a ...interface{}) {
-	if l.DefaultLevel() >= l.OutputLevel() {
-		l.info.Output(l.depth, fmt.Sprint(a...))
-	}
+	l.output(l.DefaultLevel(), a...)
 }
 
 // Printf prints log with DefaultLevel.
 // Arguments are handled in the manner of fmt.Printf.
 func (l *LeveledLogger) Printf(format string, a ...interface{}) {
-	if l.DefaultLevel() >= l.OutputLevel() {
-		l.info.Output(l.depth, fmt.Sprintf(format, a...))
-	}
+	l.outputf(l.DefaultLevel(), format, a...)
 }
 
 // Println prints log with DefaultLevel.
 // Arguments are handled in the manner of fmt.Println.
 func (l *LeveledLogger) Println(a ...interface{}) {
-	if l.DefaultLevel() >= l.OutputLevel() {
-		l.info.Output(l.depth, fmt.Sprintln(a...))
-	}
+	l.outputln(l.DefaultLevel(), a...)
 }
 
 // PrintDepth acts as Print but uses depth to determine which call frame to log
 // PrintDepth(0, "msg") is the same as Print("msg")
 func (l *LeveledLogger) PrintDepth(depth int, a ...interface{}) {
-	if l.DefaultLevel() >= l.OutputLevel() {
-		l.info.Output(l.depth+depth, fmt.Sprint(a...))
-	}
+	l.outputDepth(depth, l.DefaultLevel(), a...)
 }
 
 // PrintfDepth acts as Printf but uses depth to determine which call frame to log
 // PrintfDepth(0, "msg") is the same as Printf("msg")
 func (l *LeveledLogger) PrintfDepth(depth int, format string, a ...interface{}) {
-	if l.DefaultLevel() >= l.OutputLevel() {
-		l.info.Output(l.depth+depth, fmt.Sprintf(format, a...))
-	}
+	l.outputfDepth(depth, l.DefaultLevel(), format, a...)
 }
 
 // PrintflnDepth acts as Printfln but uses depth to determine which call frame to log
 // PrintflnDepth(0, "msg") is the same as Printfln("msg")
 func (l *LeveledLogger) PrintlnDepth(depth int, a ...interface{}) {
-	if l.DefaultLevel() >= l.OutputLevel() {
-		l.info.Output(l.depth+depth, fmt.Sprintln(a...))
-	}
+	l.outputlnDepth(depth, l.DefaultLevel(), a...)
 }
 
 // Debug prints log with level DEBUG.
 // Arguments are handled in the manner of fmt.Print.
 func (l *LeveledLogger) Debug(a ...interface{}) {
-	if DEBUG >= l.OutputLevel() {
-		l.debug.Output(l.depth, fmt.Sprint(a...))
-	}
+	l.output(DEBUG, a...)
 }
 
 // Debugf prints log with level DEBUG.
 // Arguments are handled in the manner of fmt.Printf.
 func (l *LeveledLogger) Debugf(format string, a ...interface{}) {
-	if DEBUG >= l.OutputLevel() {
-		l.debug.Output(l.depth, fmt.Sprintf(format, a...))
-	}
+	l.outputf(DEBUG, format, a...)
 }
 
 // DebugDepth acts as Debug but uses depth to determine which call frame to log
 // DebugDepth(0, "msg") is the same as Debug("msg")
 func (l *LeveledLogger) DebugDepth(depth int, a ...interface{}) {
-	if DEBUG >= l.OutputLevel() {
-		l.debug.Output(l.depth+depth, fmt.Sprint(a...))
-	}
+	l.outputDepth(depth, DEBUG, a...)
 }
 
 // DebugfDepth acts as Debugf but uses depth to determine which call frame to log
 // DebugfDepth(0, "msg") is the same as Debugf("msg")
 func (l *LeveledLogger) DebugfDepth(depth int, format string, a ...interface{}) {
-	if DEBUG >= l.OutputLevel() {
-		l.debug.Output(l.depth+depth, fmt.Sprintf(format, a...))
-	}
+	l.outputfDepth(depth, DEBUG, format, a...)
 }
 
 // Info prints log with level INFO.
 // Arguments are handled in the manner of fmt.Print.
 func (l *LeveledLogger) Info(a ...interface{}) {
-	if INFO >= l.OutputLevel() {
-		l.info.Output(l.depth, fmt.Sprint(a...))
-	}
+	l.output(INFO, a...)
 }
 
 // Infof prints log with level INFO.
 // Arguments are handled in the manner of fmt.Printf.
 func (l *LeveledLogger) Infof(format string, a ...interface{}) {
-	if INFO >= l.OutputLevel() {
-		l.info.Output(l.depth, fmt.Sprintf(format, a...))
-	}
+	l.outputf(INFO, format, a...)
 }
 
 // InfoDepth acts as Info but uses depth to determine which call frame to log
 // InfoDepth(0, "msg") is the same as Info("msg")
 func (l *LeveledLogger) InfoDepth(depth int, a ...interface{}) {
-	if INFO >= l.OutputLevel() {
-		l.info.Output(l.depth+depth, fmt.Sprint(a...))
-	}
+	l.outputDepth(depth, INFO, a...)
 }
 
 // InfofDepth acts as Infof but uses depth to determine which call frame to log
 // InfofDepth(0, "msg") is the same as Infof("msg")
 func (l *LeveledLogger) InfofDepth(depth int, format string, a ...interface{}) {
-	if INFO >= l.OutputLevel() {
-		l.info.Output(l.depth+depth, fmt.Sprintf(format, a...))
-	}
+	l.outputfDepth(depth, INFO, format, a...)
 }
 
 // Warn prints log with level WARN.
 // Arguments are handled in the manner of fmt.Print.
 func (l *LeveledLogger) Warn(a ...interface{}) {
-	if WARN >= l.OutputLevel() {
-		l.warn.Output(l.depth, fmt.Sprint(a...))
-	}
+	l.output(WARN, a...)
 }
 
 // Warnf prints log with level WARN.
 // Arguments are handled in the manner of fmt.Printf.
 func (l *LeveledLogger) Warnf(format string, a ...interface{}) {
-	if WARN >= l.OutputLevel() {
-		l.warn.Output(l.depth, fmt.Sprintf(format, a...))
-	}
+	l.outputf(WARN, format, a...)
 }
 
 // WarnDepth acts as Warn but uses depth to determine which call frame to log
 // WarnDepth(0, "msg") is the same as Warn("msg")
 func (l *LeveledLogger) WarnDepth(depth int, a ...interface{}) {
-	if WARN >= l.OutputLevel() {
-		l.warn.Output(l.depth+depth, fmt.Sprint(a...))
-	}
+	l.outputDepth(depth, WARN, a...)
 }
 
 // WarnfDepth acts as Warnf but uses depth to determine which call frame to log
 // WarnfDepth(0, "msg") is the same as Warnf("msg")
 func (l *LeveledLogger) WarnfDepth(depth int, format string, a ...interface{}) {
-	if WARN >= l.OutputLevel() {
-		l.warn.Output(l.depth+depth, fmt.Sprintf(format, a...))
-	}
+	l.outputfDepth(depth, WARN, format, a...)
 }
 
 // Error prints log with level ERROR.
 // Arguments are handled in the manner of fmt.Print.
 func (l *LeveledLogger) Error(a ...interface{}) {
-	if WARN >= l.OutputLevel() {
-		l.erro.Output(l.depth, fmt.Sprint(a...))
-	}
+	l.output(ERROR, a...)
 }
 
 // Errorf prints log with level ERROR.
 // Arguments are handled in the manner of fmt.Printf.
 func (l *LeveledLogger) Errorf(format string, a ...interface{}) {
-	if WARN >= l.OutputLevel() {
-		l.erro.Output(l.depth, fmt.Sprintf(format, a...))
-	}
+	l.outputf(ERROR, format, a...)
 }
 
 // ErrorDepth acts as Error but uses depth to determine which call frame to log
 // ErrorDepth(0, "msg") is the same as Error("msg")
 func (l *LeveledLogger) ErrorDepth(depth int, a ...interface{}) {
-	if WARN >= l.OutputLevel() {
-		l.erro.Output(l.depth+depth, fmt.Sprint(a...))
-	}
+	l.outputDepth(depth, ERROR, a...)
 }
 
 // ErrorfDepth acts as Errorf but uses depth to determine which call frame to log
 // ErrorfDepth(0, "msg") is the same as Errorf("msg")
 func (l *LeveledLogger) ErrorfDepth(depth int, format string, a ...interface{}) {
-	if WARN >= l.OutputLevel() {
-		l.erro.Output(l.depth+depth, fmt.Sprintf(format, a...))
-	}
+	l.outputfDepth(depth, ERROR, format, a...)
 }
 
 // Fatal prints log with level FATA then os.Exit(1).
 // Arguments are handled in the manner of fmt.Print.
 func (l *LeveledLogger) Fatal(a ...interface{}) {
-	if FATA >= l.OutputLevel() {
-		l.fata.Output(l.depth, fmt.Sprint(a...))
-	}
-	os.Exit(1)
+	l.output(FATA, a...)
 }
 
 // Fatalf prints log with level FATA then os.Exit(1).
 // Arguments are handled in the manner of fmt.Printf.
 func (l *LeveledLogger) Fatalf(format string, a ...interface{}) {
-	if FATA >= l.OutputLevel() {
-		l.fata.Output(l.depth, fmt.Sprintf(format, a...))
-	}
-	os.Exit(1)
+	l.outputf(FATA, format, a...)
 }
 
 // FatalDepth acts as Fatal but uses depth to determine which call frame to log
 // FatalDepth(0, "msg") is the same as Fatal("msg")
 func (l *LeveledLogger) FatalDepth(depth int, a ...interface{}) {
-	if FATA >= l.OutputLevel() {
-		l.fata.Output(l.depth+depth, fmt.Sprint(a...))
-	}
-	os.Exit(1)
+	l.outputDepth(depth, FATA, a...)
 }
 
 // FatalfDepth acts as Fatalf but uses depth to determine which call frame to log
 // FatalfDepth(0, "msg") is the same as Fatalf("msg")
 func (l *LeveledLogger) FatalfDepth(depth int, format string, a ...interface{}) {
-	if FATA >= l.OutputLevel() {
-		l.fata.Output(l.depth+depth, fmt.Sprintf(format, a...))
-	}
-	os.Exit(1)
+	l.outputfDepth(depth, FATA, format, a...)
 }
 
 func (l *LeveledLogger) output(level Level, a ...interface{}) {
@@ -297,24 +241,31 @@ func (l *LeveledLogger) outputDepth(depth int, level Level, a ...interface{}) {
 		return
 	}
 
-	var logger *log.Logger
-	switch level {
-	case DEBUG:
-		logger = l.debug
-	case INFO:
-		logger = l.info
-	case WARN:
-		logger = l.warn
-	case ERROR:
-		logger = l.erro
-	case FATA:
-		logger = l.fata
+	logger := l.getOutputTarget(level)
+	if logger != nil {
+		logger.Output(l.depth+depth, fmt.Sprint(a...))
 	}
+	if level == FATA {
+		os.Exit(1)
+	}
+}
 
-	if logger == nil {
+func (l *LeveledLogger) outputln(level Level, a ...interface{}) {
+	l.outputlnDepth(1, level, a...)
+}
+
+func (l *LeveledLogger) outputlnDepth(depth int, level Level, a ...interface{}) {
+	if level < l.OutputLevel() {
 		return
 	}
-	logger.Output(l.depth+depth, fmt.Sprint(a...))
+
+	logger := l.getOutputTarget(level)
+	if logger != nil {
+		logger.Output(l.depth+depth, fmt.Sprintln(a...))
+	}
+	if level == FATA {
+		os.Exit(1)
+	}
 }
 
 func (l *LeveledLogger) outputf(level Level, format string, a ...interface{}) {
@@ -326,7 +277,16 @@ func (l *LeveledLogger) outputfDepth(depth int, level Level, format string, a ..
 		return
 	}
 
-	var logger *log.Logger
+	logger := l.getOutputTarget(level)
+	if logger != nil {
+		logger.Output(l.depth+depth, fmt.Sprintf(format, a...))
+	}
+	if level == FATA {
+		os.Exit(1)
+	}
+}
+
+func (l *LeveledLogger) getOutputTarget(level Level) (logger *log.Logger) {
 	switch level {
 	case DEBUG:
 		logger = l.debug
@@ -339,9 +299,5 @@ func (l *LeveledLogger) outputfDepth(depth int, level Level, format string, a ..
 	case FATA:
 		logger = l.fata
 	}
-
-	if logger == nil {
-		return
-	}
-	logger.Output(l.depth+depth, fmt.Sprintf(format, a...))
+	return
 }
