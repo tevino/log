@@ -8,6 +8,7 @@ import (
 
 	"github.com/inconshreveable/log15"
 	"github.com/juju/loggo"
+	"github.com/juju/loggo/loggocolor"
 	gologging "github.com/op/go-logging"
 	"github.com/sirupsen/logrus"
 )
@@ -52,7 +53,7 @@ func BenchmarkLoggo(b *testing.B) {
 	if _, err := loggo.RemoveWriter("default"); err != nil {
 		panic(err)
 	}
-	var writer = loggo.NewColorWriter(&buf)
+	var writer = loggocolor.NewColorWriter(&buf)
 	if err := loggo.RegisterWriter("default", writer); err != nil {
 		panic(err)
 	}
