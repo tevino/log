@@ -54,3 +54,55 @@ func TestOutputLevel(t *testing.T) {
 		t.Errorf("WARN log is expected: '%s'", buf.String())
 	}
 }
+
+func TestDynamicCallDepth(t *testing.T) {
+	var buf bytes.Buffer
+	l := NewLeveledLogger(&buf, Lshortfile)
+
+	assertFileAndLine := func(t *testing.T, data string, exp string) {
+		t.Helper()
+		if !strings.Contains(data, exp) {
+			t.Errorf("Expected filename and line number '%s' not found in: '%s'", exp, data)
+		}
+	}
+
+	t.Run("debug", func(t *testing.T) {
+		buf.Reset()
+		debug := func(a ...interface{}) {
+			l.DebugDepth(1, a...)
+		}
+		debug("DEBUG log")
+		exp := "leveled_logger_test.go:74"
+		assertFileAndLine(t, buf.String(), exp)
+	})
+
+	t.Run("info", func(t *testing.T) {
+		buf.Reset()
+		info := func(a ...interface{}) {
+			l.InfoDepth(1, a...)
+		}
+		info("INFO log")
+		exp := "leveled_logger_test.go:84"
+		assertFileAndLine(t, buf.String(), exp)
+	})
+
+	t.Run("warn", func(t *testing.T) {
+		buf.Reset()
+		warn := func(a ...interface{}) {
+			l.WarnDepth(1, a...)
+		}
+		warn("WARN log")
+		exp := "leveled_logger_test.go:94"
+		assertFileAndLine(t, buf.String(), exp)
+	})
+
+	t.Run("error", func(t *testing.T) {
+		buf.Reset()
+		err := func(a ...interface{}) {
+			l.WarnDepth(1, a...)
+		}
+		err("ERROR log")
+		exp := "leveled_logger_test.go:104"
+		assertFileAndLine(t, buf.String(), exp)
+	})
+}
