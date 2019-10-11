@@ -52,7 +52,7 @@ type FatalLogger interface {
 	Fatal(...interface{})
 	Fatalf(string, ...interface{})
 
-	FatalDepth(int ...interface{})
+	FatalDepth(int, ...interface{})
 	FatalfDepth(int, string, ...interface{})
 }
 

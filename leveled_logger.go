@@ -269,3 +269,79 @@ func (l *LeveledLogger) Fatalf(format string, a ...interface{}) {
 	}
 	os.Exit(1)
 }
+
+// FatalDepth acts as Fatal but uses depth to determine which call frame to log
+// FatalDepth(0, "msg") is the same as Fatal("msg")
+func (l *LeveledLogger) FatalDepth(depth int, a ...interface{}) {
+	if FATA >= l.OutputLevel() {
+		l.fata.Output(l.depth+depth, fmt.Sprint(a...))
+	}
+	os.Exit(1)
+}
+
+// FatalfDepth acts as Fatalf but uses depth to determine which call frame to log
+// FatalfDepth(0, "msg") is the same as Fatalf("msg")
+func (l *LeveledLogger) FatalfDepth(depth int, format string, a ...interface{}) {
+	if FATA >= l.OutputLevel() {
+		l.fata.Output(l.depth+depth, fmt.Sprintf(format, a...))
+	}
+	os.Exit(1)
+}
+
+func (l *LeveledLogger) output(level Level, a ...interface{}) {
+	l.outputDepth(1, level, a...)
+}
+
+func (l *LeveledLogger) outputDepth(depth int, level Level, a ...interface{}) {
+	if level < l.OutputLevel() {
+		return
+	}
+
+	var logger *log.Logger
+	switch level {
+	case DEBUG:
+		logger = l.debug
+	case INFO:
+		logger = l.info
+	case WARN:
+		logger = l.warn
+	case ERROR:
+		logger = l.erro
+	case FATA:
+		logger = l.fata
+	}
+
+	if logger == nil {
+		return
+	}
+	logger.Output(l.depth+depth, fmt.Sprint(a...))
+}
+
+func (l *LeveledLogger) outputf(level Level, format string, a ...interface{}) {
+	l.outputfDepth(1, level, format, a...)
+}
+
+func (l *LeveledLogger) outputfDepth(depth int, level Level, format string, a ...interface{}) {
+	if level < l.OutputLevel() {
+		return
+	}
+
+	var logger *log.Logger
+	switch level {
+	case DEBUG:
+		logger = l.debug
+	case INFO:
+		logger = l.info
+	case WARN:
+		logger = l.warn
+	case ERROR:
+		logger = l.erro
+	case FATA:
+		logger = l.fata
+	}
+
+	if logger == nil {
+		return
+	}
+	logger.Output(l.depth+depth, fmt.Sprintf(format, a...))
+}
