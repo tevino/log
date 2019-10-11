@@ -9,6 +9,7 @@ A lightweight, leveled logging package for Go.
 ## Features
 - Leveled logging and filtering
 - Colored output
+- Log with file name and line number
 
 ## Example
 
@@ -31,3 +32,7 @@ BenchmarkGoLogging-4         1000000          1136 ns/op         601 B/op       
 BenchmarkThisPackage-4       3000000           731 ns/op         214 B/op          2 allocs/op
 BenchmarkStdLog-4            2000000           571 ns/op         174 B/op          2 allocs/op
 ```
+
+## Acknowledgements
+
+- @kirk91: Provide APIs to make it possible for user to specify a custom caller offset.
