@@ -2,6 +2,7 @@ package log
 
 import (
 	"bytes"
+	"fmt"
 	"strings"
 	"testing"
 )
@@ -11,7 +12,7 @@ func TestFileLine(t *testing.T) {
 	l := NewLeveledLogger(&buf, Lshortfile)
 	l.Info("Test file line")
 
-	var exp = "leveled_logger_test.go:12"
+	var exp = "leveled_logger_test.go:13"
 	if !strings.Contains(buf.String(), exp) {
 		t.Errorf("Expected filename and line number '%s' not found in: '%s'", exp, buf.String())
 	}
@@ -31,7 +32,7 @@ func TestCallerOffset(t *testing.T) {
 	l.SetCallerOffset(0)
 	l.Info("Test file line")
 
-	exp = "leveled_logger_test.go:32"
+	exp = "leveled_logger_test.go:33"
 	if !strings.Contains(buf.String(), exp) {
 		t.Errorf("Expected filename and line number '%s' not found in: '%s'", exp, buf.String())
 	}
@@ -59,10 +60,11 @@ func TestDynamicCallDepth(t *testing.T) {
 	var buf bytes.Buffer
 	l := NewLeveledLogger(&buf, Lshortfile)
 
-	assertFileAndLine := func(t *testing.T, data string, exp string) {
+	assertFileAndLine := func(t *testing.T, msg string, line int) {
 		t.Helper()
-		if !strings.Contains(data, exp) {
-			t.Errorf("Expected filename and line number '%s' not found in: '%s'", exp, data)
+		exp := fmt.Sprintf("%s:%d", "leveled_logger_test.go", line)
+		if !strings.Contains(msg, exp) {
+			t.Errorf("Expected filename and line number '%s' not found in: '%s'", exp, msg)
 		}
 	}
 
@@ -72,8 +74,7 @@ func TestDynamicCallDepth(t *testing.T) {
 			l.DebugDepth(1, a...)
 		}
 		debug("DEBUG log")
-		exp := "leveled_logger_test.go:74"
-		assertFileAndLine(t, buf.String(), exp)
+		assertFileAndLine(t, buf.String(), 76)
 	})
 
 	t.Run("info", func(t *testing.T) {
@@ -82,8 +83,7 @@ func TestDynamicCallDepth(t *testing.T) {
 			l.InfoDepth(1, a...)
 		}
 		info("INFO log")
-		exp := "leveled_logger_test.go:84"
-		assertFileAndLine(t, buf.String(), exp)
+		assertFileAndLine(t, buf.String(), 85)
 	})
 
 	t.Run("warn", func(t *testing.T) {
@@ -92,8 +92,7 @@ func TestDynamicCallDepth(t *testing.T) {
 			l.WarnDepth(1, a...)
 		}
 		warn("WARN log")
-		exp := "leveled_logger_test.go:94"
-		assertFileAndLine(t, buf.String(), exp)
+		assertFileAndLine(t, buf.String(), 94)
 	})
 
 	t.Run("error", func(t *testing.T) {
@@ -102,7 +101,6 @@ func TestDynamicCallDepth(t *testing.T) {
 			l.WarnDepth(1, a...)
 		}
 		err("ERROR log")
-		exp := "leveled_logger_test.go:104"
-		assertFileAndLine(t, buf.String(), exp)
+		assertFileAndLine(t, buf.String(), 103)
 	})
 }
