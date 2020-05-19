@@ -5,13 +5,19 @@ import "os"
 var defaultLogger Logger
 
 func init() {
-	defaultLogger = NewLogger(os.Stdout, LstdFlags|Lshortfile)
-	defaultLogger.SetCallerOffset(1)
+	SetDefaultLogger(NewLogger(os.Stdout, LstdFlags|Lshortfile))
 }
 
 // DefaultLogger returns the default logger which writes to os.Stdout.
 func DefaultLogger() Logger {
 	return defaultLogger
+}
+
+// SetDefaultLogger sets the default logger with CallerOffset set.
+// NOTE: this function is supposed to be called while DefaultLogger is not in use, it's not goroutine safe for performance.
+func SetDefaultLogger(logger Logger) {
+	logger.SetCallerOffset(1)
+	defaultLogger = logger
 }
 
 // Print calls the same method on the default logger.
