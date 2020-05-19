@@ -106,7 +106,7 @@ func (l *LeveledLogger) PrintfDepth(depth int, format string, a ...interface{}) 
 	l.outputfDepth(depth, l.DefaultLevel(), format, a...)
 }
 
-// PrintflnDepth acts as Printfln but uses depth to determine which call frame to log
+// PrintlnDepth acts as Printfln but uses depth to determine which call frame to log
 // PrintflnDepth(0, "msg") is the same as Printfln("msg")
 func (l *LeveledLogger) PrintlnDepth(depth int, a ...interface{}) {
 	l.outputlnDepth(depth, l.DefaultLevel(), a...)

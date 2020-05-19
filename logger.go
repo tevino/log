@@ -38,7 +38,7 @@ type WarnLogger interface {
 	WarnfDepth(int, string, ...interface{})
 }
 
-// WarnLogger represents a logger with Error* APIs.
+// ErrorLogger represents a logger with Error* APIs.
 type ErrorLogger interface {
 	Error(...interface{})
 	Errorf(string, ...interface{})
