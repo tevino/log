@@ -3,10 +3,10 @@ package log
 import "testing"
 
 func TestLevelComparison(t *testing.T) {
-	if !(NOTSET < DEBUG &&
-		DEBUG < INFO &&
-		INFO < WARN &&
-		WARN < FATA) {
-		t.Fatal("Wrong relationship between levels")
+	levelsSortedByValueAsc := []Level{NOTSET, DEBUG, INFO, WARN, FATA}
+	for i, level := range levelsSortedByValueAsc[:len(levelsSortedByValueAsc)-1] {
+		if level >= levelsSortedByValueAsc[i+1] {
+			t.Errorf("Expected level %v to be less than %v", level, levelsSortedByValueAsc[i+1])
+		}
 	}
 }

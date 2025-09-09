@@ -243,7 +243,7 @@ func (l *LeveledLogger) outputDepth(depth int, level Level, a ...interface{}) {
 
 	logger := l.getOutputTarget(level)
 	if logger != nil {
-		logger.Output(l.depth+depth, fmt.Sprint(a...))
+		_ = logger.Output(l.depth+depth, fmt.Sprint(a...))
 	}
 	if level == FATA {
 		os.Exit(1)
@@ -261,7 +261,7 @@ func (l *LeveledLogger) outputlnDepth(depth int, level Level, a ...interface{}) 
 
 	logger := l.getOutputTarget(level)
 	if logger != nil {
-		logger.Output(l.depth+depth, fmt.Sprintln(a...))
+		_ = logger.Output(l.depth+depth, fmt.Sprintln(a...))
 	}
 	if level == FATA {
 		os.Exit(1)
@@ -279,7 +279,7 @@ func (l *LeveledLogger) outputfDepth(depth int, level Level, format string, a ..
 
 	logger := l.getOutputTarget(level)
 	if logger != nil {
-		logger.Output(l.depth+depth, fmt.Sprintf(format, a...))
+		_ = logger.Output(l.depth+depth, fmt.Sprintf(format, a...))
 	}
 	if level == FATA {
 		os.Exit(1)
