@@ -24,14 +24,28 @@ log.Info("Thus only this line is printed.")
 
 
 ## Benchmark
+
 ```
-BenchmarkLog15-4              300000          4391 ns/op        1202 B/op         16 allocs/op
-BenchmarkLogrus-4             500000          3444 ns/op        1715 B/op         24 allocs/op
-BenchmarkLoggo-4              500000          3275 ns/op         344 B/op         11 allocs/op
-BenchmarkGoLogging-4         1000000          1136 ns/op         601 B/op         10 allocs/op
-BenchmarkThisPackage-4       3000000           731 ns/op         214 B/op          2 allocs/op
-BenchmarkStdLog-4            2000000           571 ns/op         174 B/op          2 allocs/op
+goos: linux
+goarch: amd64
+pkg: github.com/tevino/log
+cpu: AMD EPYC 7763 64-Core Processor                
+BenchmarkLog15-4         	  528672	      2178 ns/op
+BenchmarkLogrus-4        	  502843	      2170 ns/op
+BenchmarkLoggo-4         	  537241	      2214 ns/op
+BenchmarkGoLogging-4     	 1807219	       640.1 ns/op
+BenchmarkThisPackage-4   	 3868623	       309.8 ns/op 👈
+BenchmarkStdLog-4        	 4278027	       274.7 ns/op
 ```
+
+go 1.24.0
+
+| Library | Version |
+|-------|--------|
+| log15 | v3.0.0 |
+| logrus | v1.9.3 |
+| loggo | v1.0.0 |
+| go-logging | v0.0.0-20160315200505-970db520ece7 |
 
 ## Acknowledgements
 
