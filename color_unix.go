@@ -1,3 +1,6 @@
+//go:build linux || darwin || freebsd || openbsd || netbsd || dragonfly
+// +build linux darwin freebsd openbsd netbsd dragonfly
+
 package log
 
 import (
@@ -5,7 +8,8 @@ import (
 	"io"
 	"os"
 	"syscall"
-	"unsafe"
+
+	"golang.org/x/term"
 )
 
 // Colors.
@@ -23,8 +27,8 @@ func paint(str string, color string) string {
 	return fmt.Sprintf("%s%s%s", color, str, ColorRST)
 }
 
-// IsTerminal returns true if the given writer supports colored output.
-func IsTerminal(w io.Writer) bool {
+// IsColoredTerminal returns true if the given writer supports colored output.
+func IsColoredTerminal(w io.Writer) bool {
 	var fd int
 	switch w {
 	case os.Stdout:
@@ -34,7 +38,6 @@ func IsTerminal(w io.Writer) bool {
 	default:
 		return false
 	}
-	var termios syscall.Termios
-	_, _, err := syscall.Syscall6(syscall.SYS_IOCTL, uintptr(fd), ioCtlReadTermios, uintptr(unsafe.Pointer(&termios)), 0, 0, 0)
-	return err == 0
+	// NOTE: modern terminals support ANSI escape codes.
+	return term.IsTerminal(fd)
 }

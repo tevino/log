@@ -12,7 +12,7 @@ import (
 // The flag argument defines the logging properties, it is the same as log.New.
 // You could use flags from THIS log package to avoid importing standard package log.
 func NewLeveledLogger(out io.Writer, flag int) *LeveledLogger {
-	return NewLeveledLoggerWithColor(out, flag, IsTerminal(out))
+	return NewLeveledLoggerWithColor(out, flag, IsColoredTerminal(out))
 }
 
 // NewLeveledLoggerWithColor is NewLeveledLogger with an additional colored parameter indicating if color is forced.
