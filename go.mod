@@ -4,7 +4,7 @@ require (
 	github.com/inconshreveable/log15 v3.0.0-testing.5+incompatible
 	github.com/juju/loggo v1.0.0
 	github.com/op/go-logging v0.0.0-20160315200505-970db520ece7
-	github.com/sirupsen/logrus v1.9.3
+	github.com/sirupsen/logrus v1.9.4
 	golang.org/x/term v0.40.0
 )
 
