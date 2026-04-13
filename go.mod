@@ -5,7 +5,7 @@ require (
 	github.com/juju/loggo v1.0.0
 	github.com/op/go-logging v0.0.0-20160315200505-970db520ece7
 	github.com/sirupsen/logrus v1.9.4
-	golang.org/x/term v0.40.0
+	golang.org/x/term v0.42.0
 )
 
 require (
@@ -15,8 +15,8 @@ require (
 	github.com/lunixbochs/vtclean v1.0.0 // indirect
 	github.com/mattn/go-colorable v0.0.9 // indirect
 	github.com/mattn/go-isatty v0.0.4 // indirect
-	golang.org/x/sys v0.41.0 // indirect
+	golang.org/x/sys v0.43.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
 )
 
-go 1.24.0
+go 1.25.0
