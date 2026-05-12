@@ -1,12 +1,6 @@
 module github.com/tevino/log
 
-require (
-	github.com/inconshreveable/log15 v3.0.0-testing.5+incompatible
-	github.com/juju/loggo v1.0.0
-	github.com/op/go-logging v0.0.0-20160315200505-970db520ece7
-	github.com/sirupsen/logrus v1.9.4
-	golang.org/x/term v0.40.0
-)
+require golang.org/x/term v0.40.0
 
 require (
 	github.com/go-stack/stack v1.8.0 // indirect
@@ -17,6 +11,13 @@ require (
 	github.com/mattn/go-isatty v0.0.4 // indirect
 	golang.org/x/sys v0.41.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
+)
+
+require (
+	github.com/inconshreveable/log15 v3.0.0-testing.5+incompatible // test
+	github.com/juju/loggo v1.0.0 // test
+	github.com/op/go-logging v0.0.0-20160315200505-970db520ece7 // test
+	github.com/sirupsen/logrus v1.9.4 // test
 )
 
 go 1.24.0
